@@ -1,0 +1,17 @@
+## Ignore Visual Studio & .NET build output
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Ignore published single-file executables
+publish_output/
+
+## Ignore local SQLite databases and local settings
+*.db
+*.db-shm
+*.db-wal
+app_settings.json

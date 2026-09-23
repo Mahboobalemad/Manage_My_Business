@@ -1,0 +1,118 @@
+<UserControl x:Class="ShopsManagement.UI.Views.EmployeesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:ShopsManagement.UI.Converters"
+             mc:Ignorable="d" 
+             FlowDirection="RightToLeft"
+             d:DesignHeight="750" d:DesignWidth="1100">
+    <UserControl.Resources>
+        <converters:NetBalanceColorConverter x:Key="NetBalanceColorConverter"/>
+        <converters:NetBalanceTextConverter x:Key="NetBalanceTextConverter"/>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI, Tahoma"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="Auto"/> <!-- Actions Bar & Filters -->
+            <RowDefinition Height="*"/>    <!-- Master DataGrid -->
+            <RowDefinition Height="Auto"/> <!-- Footer Status -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#1E293B" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="👥 سجل وإدارة الموظفين والرواتب" Foreground="White" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Text="— كشوفات الموظفين ومستحقات الرواتب والسحبيات والتسويات" Foreground="#94A3B8" FontSize="13" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Action Bar & Filters -->
+        <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="12" Margin="0,0,0,15" BorderBrush="#E2E8F0" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Add Employee Button -->
+                <Button Grid.Column="0" Content="➕ إضافة موظف جديد" Command="{Binding OpenAddEmployeeDialogCommand}" 
+                        Background="#2563EB" Foreground="White" Padding="18,8" BorderThickness="0" FontWeight="Bold" FontSize="14"/>
+
+                <!-- Filters -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="فلترة المحل:" Foreground="#475569" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="13"/>
+                    <ComboBox ItemsSource="{Binding Branches}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedFilterBranch}" 
+                              Width="160" Padding="6,4" Margin="0,0,15,0"/>
+
+                    <TextBlock Text="حالة النشاط:" Foreground="#475569" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="13"/>
+                    <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedFilterStatus}" 
+                              Width="130" Padding="6,4"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Master DataGrid -->
+        <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E2E8F0" BorderThickness="1">
+            <DataGrid ItemsSource="{Binding EmployeesSummaries}" 
+                      SelectedItem="{Binding SelectedEmployeeSummary}" 
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True" 
+                      CanUserAddRows="False"
+                      GridLinesVisibility="Horizontal"
+                      HorizontalGridLinesBrush="#E2E8F0"
+                      RowHeight="42"
+                      Background="Transparent"
+                      BorderThickness="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="#" Binding="{Binding EmployeeId}" Width="50"/>
+                    <DataGridTextColumn Header="اسم الموظف" Binding="{Binding EmployeeName}" Width="*"/>
+                    <DataGridTextColumn Header="الفرع" Binding="{Binding BranchName}" Width="130"/>
+                    <DataGridTextColumn Header="الراتب الشهري" Binding="{Binding BaseSalary, StringFormat={}{0:N2} ر.ي}" Width="120"/>
+                    <DataGridTextColumn Header="إجمالي السحبيات (عليه)" Binding="{Binding TotalWithdrawalsAndDeductions, StringFormat={}{0:N2} ر.ي}" Width="150"/>
+                    <DataGridTextColumn Header="إجمالي المستحقات (له)" Binding="{Binding TotalEntitlements, StringFormat={}{0:N2} ر.ي}" Width="150"/>
+                    
+                    <!-- Net Entitlement with Color Converter (Green if له, Red if عليه) -->
+                    <DataGridTemplateColumn Header="المتبقي له / عليه" Width="170">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding NetEntitlement, Converter={StaticResource NetBalanceTextConverter}}" 
+                                           Foreground="{Binding NetEntitlement, Converter={StaticResource NetBalanceColorConverter}}" 
+                                           FontWeight="Bold" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Action Buttons -->
+                    <DataGridTemplateColumn Header="الإجراءات" Width="200">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="تفاصيل الحركة" Command="{Binding DataContext.OpenEmployeeDetailDialogCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding}" Background="#059669" Foreground="White" Padding="8,4" Margin="2" FontSize="11" BorderThickness="0"/>
+                                    
+                                    <Button Content="تعديل" Command="{Binding DataContext.EditEmployeeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding}" Background="#64748B" Foreground="White" Padding="8,4" Margin="2" FontSize="11" BorderThickness="0"/>
+                                    
+                                    <Button Content="حذف" Command="{Binding DataContext.DeleteEmployeeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding}" Background="#EF4444" Foreground="White" Padding="8,4" Margin="2" FontSize="11" BorderThickness="0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Status Footer -->
+        <Border Grid.Row="3" Background="#F8FAFC" Padding="10" Margin="0,15,0,0" CornerRadius="4" BorderBrush="#E2E8F0" BorderThickness="1">
+            <TextBlock Text="{Binding StatusMessage}" Foreground="#334155" FontSize="13"/>
+        </Border>
+    </Grid>
+</UserControl>

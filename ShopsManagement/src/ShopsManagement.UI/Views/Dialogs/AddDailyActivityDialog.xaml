@@ -1,0 +1,65 @@
+<Window x:Class="ShopsManagement.UI.Views.Dialogs.AddDailyActivityDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="تسجيل المبيعات اليومية" Height="520" Width="460"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        FlowDirection="RightToLeft"
+        Background="#F8FAFC">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="*"/>    <!-- Form -->
+            <RowDefinition Height="Auto"/> <!-- Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock x:Name="TxtTitle" Text="📊 إضافة مبيعات يومية جديدة" FontSize="18" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,15"/>
+
+        <!-- Form Controls -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15">
+            <StackPanel>
+                <!-- Branch Selection -->
+                <TextBlock Text="اختيار الفرع *" Foreground="#475569" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <ComboBox x:Name="CmbBranch" DisplayMemberPath="Name" Padding="8" FontSize="14" Margin="0,0,0,14"/>
+
+                <!-- Date Picker -->
+                <TextBlock Text="التاريخ *" Foreground="#475569" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <DatePicker x:Name="DpDate" Padding="8" FontSize="14" Margin="0,0,0,14"/>
+
+                <!-- Total Sales & Expenses Grid -->
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                        <TextBlock Text="إجمالي المبيعات (ر.ي) *" Foreground="#047857" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TxtTotalSales" Text="0" Padding="8" FontSize="14" FontWeight="Bold" Foreground="#065F46"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                        <TextBlock Text="إجمالي المصروفات (ر.ي) *" Foreground="#B91C1C" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TxtTotalExpenses" Text="0" Padding="8" FontSize="14" FontWeight="Bold" Foreground="#991B1B"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Optional Net Profits -->
+                <TextBlock Text="صافي الأرباح (ر.ي) (اختياري)" Foreground="#1D4ED8" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <TextBox x:Name="TxtNetProfit" Padding="8" FontSize="14" FontWeight="Bold" Foreground="#1E40AF" Margin="0,0,0,14"/>
+
+                <!-- Notes -->
+                <TextBlock Text="ملاحظات (اختياري)" Foreground="#475569" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <TextBox x:Name="TxtNotes" Padding="8" Height="60" TextWrapping="Wrap" AcceptsReturn="True" FontSize="13"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button x:Name="BtnSave" Content="إضافة إلى القائمة" Click="BtnSave_Click" Background="#2563EB" Foreground="White" Padding="20,10" Margin="0,0,10,0" BorderThickness="0" FontWeight="Bold" FontSize="14"/>
+            <Button Content="إلغاء" Click="BtnCancel_Click" Background="#64748B" Foreground="White" Padding="15,10" BorderThickness="0" FontWeight="Bold" FontSize="14"/>
+        </StackPanel>
+    </Grid>
+</Window>

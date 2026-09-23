@@ -1,0 +1,146 @@
+<UserControl x:Class="ShopsManagement.UI.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             FlowDirection="RightToLeft"
+             d:DesignHeight="700" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI, Tahoma"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="*"/>    <!-- KPI Cards Grid -->
+            <RowDefinition Height="Auto"/> <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- Header Controls -->
+        <Border Grid.Row="0" Background="#1E293B" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="📊 لوحة التحكم والإحصائيات الفورية" Foreground="White" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text="— الملخص الإجمالي والمؤشرات المالية" Foreground="#94A3B8" FontSize="13" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <!-- Branch Filter & Refresh Button -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="الفرع:" Foreground="#94A3B8" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="13"/>
+                    <ComboBox ItemsSource="{Binding Branches}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedBranch}" 
+                              Width="180" Padding="6,4" Margin="0,0,10,0"/>
+                    <Button Content="تحديث البيانات" Command="{Binding RefreshCommand}" Background="#2563EB" Foreground="White" Padding="12,5" BorderThickness="0" FontWeight="Bold"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Dashboard KPI Grid -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Row 1: Today KPIs -->
+                <TextBlock Text="أداء اليوم" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,10"/>
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Today Sales Card -->
+                    <Border Grid.Column="0" Background="#ECFDF5" BorderBrush="#A7F3D0" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="مبيعات اليوم الإجمالية" Foreground="#047857" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Summary.TodaySales, StringFormat={}{0:N2} ر.ي}" Foreground="#065F46" FontSize="22" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Today Expenses Card -->
+                    <Border Grid.Column="1" Background="#FEF2F2" BorderBrush="#FECACA" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="مصروفات اليوم الإجمالية" Foreground="#B91C1C" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Summary.TodayExpenses, StringFormat={}{0:N2} ر.ي}" Foreground="#991B1B" FontSize="22" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Today Net Sales Card -->
+                    <Border Grid.Column="2" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="صافي مبيعات اليوم" Foreground="#1D4ED8" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Summary.TodayNetSales, StringFormat={}{0:N2} ر.ي}" Foreground="#1E40AF" FontSize="22" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Row 2: Monthly KPIs -->
+                <TextBlock Text="أداء الشهر الحالي" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,10"/>
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="إجمالي مبيعات الشهر" Foreground="#475569" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Summary.MonthlySales, StringFormat={}{0:N2} ر.ي}" Foreground="#0F172A" FontSize="20" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="إجمالي مصروفات الشهر" Foreground="#475569" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Summary.MonthlyExpenses, StringFormat={}{0:N2} ر.ي}" Foreground="#0F172A" FontSize="20" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="صافي أرباح المبيعات الشهرية" Foreground="#15803D" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Summary.MonthlyNetSales, StringFormat={}{0:N2} ر.ي}" Foreground="#166534" FontSize="20" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Row 3: Traders & Employees Outstanding Entitlements -->
+                <TextBlock Text="الذمم والديون والمستحقات" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,10"/>
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Traders Debt Card -->
+                    <Border Grid.Column="0" Background="#FFFBEB" BorderBrush="#FDE68A" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="إجمالي ديون التجار المستحقة للغرفة (فواتير - دفعات)" Foreground="#B45309" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Summary.TotalTradersDebt, StringFormat={}{0:N2} ر.ي}" Foreground="#92400E" FontSize="22" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Employees Entitlement Card -->
+                    <Border Grid.Column="1" Background="#FAF5FF" BorderBrush="#E9D5FF" BorderThickness="1" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="إجمالي مستحقات الموظفين والرواتب المتبقية" Foreground="#7E22CE" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Summary.TotalEmployeesEntitlement, StringFormat={}{0:N2} ر.ي}" Foreground="#6B21A8" FontSize="22" FontWeight="Bold" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Status Footer -->
+        <Border Grid.Row="2" Background="#F8FAFC" Padding="10" Margin="0,15,0,0" CornerRadius="4" BorderBrush="#E2E8F0" BorderThickness="1">
+            <TextBlock Text="{Binding StatusMessage}" Foreground="#334155" FontSize="13"/>
+        </Border>
+    </Grid>
+</UserControl>
